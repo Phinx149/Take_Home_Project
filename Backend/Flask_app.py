@@ -15,13 +15,9 @@ available_country = Graph_object.get_node_dictionary()
 
 @app.route('/<Destination>')
 def Give_Shortest_Route(Destination: str ):
-    Start_country = 'USA'
-    connections = [("USA", "CAN"),("USA", "MEX"),("MEX", "GTM"),("MEX", "BLZ"),("BLZ", "GTM"),("GTM", "SLV"),("GTM", "HND"),("SLV", "HND"),("HND", "NIC"),("NIC", "CRI"),("CRI", "PAN")]
-    Graph_object = Graph()
-    Graph_object.graph_builder(connections)
-
+    
     error_message = []
-    available_country = Graph_object.get_node_dictionary()
+
     Destination = Destination.upper().strip("")
     
     if len(Destination) != 3:
