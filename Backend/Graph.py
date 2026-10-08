@@ -6,7 +6,7 @@ class Graph:
     def get_node_dictionary(self):
         return self.the_nodes
 
-    def graph_builder(self , set_of_connections : list):
+    def graph_builder(self , set_of_connections : list) -> None:
         # Builds a bidirectional graph dictionary
         # Input: list of connections [(country1, adjacent_country)]
         # Output: dictionary where each country maps to a Node containing its adjacent countries
@@ -32,7 +32,7 @@ class Graph:
                  node_array[second_country].add_neighbors(first_country)
 
         self.the_nodes = node_array
-    def shortest_route(self ,Start: str,  Country_code: str):
+    def shortest_route(self ,Start: str,  Country_code: str) -> None:
         # Uses BFS to find the route with the fewest border crossings
         explored_set = set()
         que = []
