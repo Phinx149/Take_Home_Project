@@ -10,56 +10,47 @@ graph.graph_builder(connections)
 #Testing the Graph code for the backend
 
 def test_pan() -> None:
-   
     route = graph.shortest_route("USA", "PAN")
     assert route == ["USA", "MEX", "GTM", "HND", "NIC", "CRI", "PAN"]
 
 
 def test_blz() -> None:
-    
     route = graph.shortest_route("USA", "BLZ")
     assert route == ["USA", "MEX", "BLZ"]
 
 
 def test_can() -> None:
-    
     route = graph.shortest_route("USA", "CAN")
     assert route == ["USA", "CAN"]
 
 
 def test_usa() -> None :
-   
     route = graph.shortest_route("USA", "USA")
     assert route == ["USA"]
 
 #Testing  apis making malformed requestes are handles well
 
 def test_pan_api() -> None :
-    
     client = app.test_client()
     response = client.get("/PAN")
     assert response.status_code == 200
 
 
 def test_lowercase() -> None:
-    
     client = app.test_client()
     response = client.get("/pan")
-
     assert response.status_code == 200
     assert response.get_json()["destination"] == "PAN"
     assert response.get_json()['from'] == 'USA'
 
 
 def test_wrong_length()-> None :
-   
     client = app.test_client()
     response = client.get("/PA")
     assert response.status_code == 400
 
 
 def test_invalid_characters() ->None:
-    
     client = app.test_client()
     response = client.get("/P4N")
     assert response.status_code == 400
