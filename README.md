@@ -75,6 +75,14 @@ returns an error because the country code is not three letters long.
 
 returns an error because the country code contains non-letter characters.
 
+Going to the API without entering a country:
+
+```text
+/
+```
+
+also returns `400 Bad Request` asking for a three letter country code.
+
 A country code that has the correct format but is not supported, such as:
 
 ```text
@@ -83,21 +91,37 @@ A country code that has the correct format but is not supported, such as:
 
 returns `404 Not Found`.
 
+Country codes are not case-sensitive, so:
+
+```text
+/pan
+```
+
+works the same as:
+
+```text
+/PAN
+```
+
 ## How it works
 
 ```mermaid
 flowchart LR
     A[GET country] --> B[Validate input]
-    B --> C[Check country]
-    C --> D[Run BFS]
-    D --> E[Return route as JSON]
+    B -->|Invalid| C[400 Bad Request]
+    B -->|Valid| D[Check country]
+    D -->|Not supported| E[404 Not Found]
+    D -->|Supported| F[Run BFS]
+    F --> G[Return route as JSON]
 ```
+
+`borders.json` stores the country border connections.
 
 `Node.py` stores each country and its neighboring countries.
 
 `Graph.py` builds the bidirectional graph and contains the BFS route search.
 
-`Flask_app.py` handles the API request, validation, and response.
+`Flask_app.py` reads the border data, builds the graph, and handles the API request, validation, and response.
 
 ## Assumptions
 
@@ -127,9 +151,16 @@ Tests include:
 - lowercase input
 - invalid input
 - unsupported countries
+- API status codes
 
 ## Deployment
 
+The API is deployed using Render.
+
 Deployed link:
 
-`Coming soon`
+https://take-home-project-31l3.onrender.com/
+
+Example:
+
+https://take-home-project-31l3.onrender.com/PAN
