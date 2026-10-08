@@ -1,8 +1,9 @@
 from Backend.Graph import Graph
 from Backend.Flask_app import app
+import json
 
-
-connections = [("USA", "CAN"), ("USA", "MEX"), ("MEX", "GTM"),("MEX", "BLZ"), ("BLZ", "GTM"), ("GTM", "SLV"),("GTM", "HND"), ("SLV", "HND"), ("HND", "NIC"),("NIC", "CRI"), ("CRI", "PAN")]
+with open("Backend/borders.json", "r") as file:
+    connections = json.load(file)
 graph = Graph()
 graph.graph_builder(connections)
 
