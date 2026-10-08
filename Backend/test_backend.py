@@ -1,15 +1,89 @@
 from Backend.Graph import Graph
-if __name__ == '__main__':
+from Backend.Flask_app import app
 
-    connections = [("USA", "CAN"),("USA", "MEX"),("MEX", "GTM"),("MEX", "BLZ"),("BLZ", "GTM"),("GTM", "SLV"),("GTM", "HND"),("SLV", "HND"),("HND", "NIC"),("NIC", "CRI"),("CRI", "PAN")]
 
-    Graph_object = Graph()
-    Graph_object.graph_builder(connections)
+connections = [("USA", "CAN"), ("USA", "MEX"), ("MEX", "GTM"),("MEX", "BLZ"), ("BLZ", "GTM"), ("GTM", "SLV"),("GTM", "HND"), ("SLV", "HND"), ("HND", "NIC"),("NIC", "CRI"), ("CRI", "PAN")]
+graph = Graph()
+graph.graph_builder(connections)
 
-    for country in Graph_object.the_nodes:
-        print(Graph_object.the_nodes[country].get_neighbors())
-    print(Graph_object.shortest_route('USA' , 'PAN'))
-    print(Graph_object.shortest_route("USA", "PAN"))
-    print(Graph_object.shortest_route("USA", "BLZ"))
-    print(Graph_object.shortest_route("USA", "CAN"))
-    print(Graph_object.shortest_route("USA", "USA"))
+
+#Testing the Graph code for the backend
+
+def test_pan() -> None:
+   
+    route = graph.shortest_route("USA", "PAN")
+    assert route == ["USA", "MEX", "GTM", "HND", "NIC", "CRI", "PAN"]
+
+
+def test_blz() -> None:
+    
+    route = graph.shortest_route("USA", "BLZ")
+    assert route == ["USA", "MEX", "BLZ"]
+
+
+def test_can() -> None:
+    
+    route = graph.shortest_route("USA", "CAN")
+    assert route == ["USA", "CAN"]
+
+
+def test_usa() -> None :
+   
+    route = graph.shortest_route("USA", "USA")
+    assert route == ["USA"]
+
+#Testing  apis making malformed requestes are handles well
+
+def test_pan_api() -> None :
+    
+    client = app.test_client()
+    response = client.get("/PAN")
+    assert response.status_code == 200
+
+
+def test_lowercase() -> None:
+    
+    client = app.test_client()
+    response = client.get("/pan")
+
+    assert response.status_code == 200
+    assert response.get_json()["destination"] == "PAN"
+    assert response.get_json()['from'] == 'USA'
+
+
+def test_wrong_length()-> None :
+   
+    client = app.test_client()
+    response = client.get("/PA")
+    assert response.status_code == 400
+
+
+def test_invalid_characters() ->None:
+    
+    client = app.test_client()
+    response = client.get("/P4N")
+    assert response.status_code == 400
+
+
+def test_country_not_supported() ->None:
+    client = app.test_client()
+    response = client.get("/XAZ")
+    assert response.status_code == 404
+
+def test_post_not_allowed():
+    client = app.test_client()
+    response = client.post("/PAN")
+    assert response.status_code == 405
+if __name__ == "__main__":
+    test_pan()
+    test_blz()
+    test_can()
+    test_usa()
+    test_pan_api()
+    test_lowercase()
+    test_wrong_length()
+    test_invalid_characters()
+    test_country_not_supported()
+    test_post_not_allowed()
+
+    print("All tests passed")
