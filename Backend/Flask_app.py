@@ -30,9 +30,9 @@ def Give_Shortest_Route(Destination: str ):
     Destination = Destination.upper().strip()
     
     if len(Destination) != 3:
-        error_message.append("error : Country need three letter word")
+        error_message.append("error : Country need three letter word ")
     if Destination.isalpha() == False:
-        error_message.append("error : country needs to be composed of only alphabetic characters")
+        error_message.append(" error : country needs to be composed of only alphabetic characters")
     if error_message != []:
         return jsonify(error_message) , 400
     if Destination not in available_country:
