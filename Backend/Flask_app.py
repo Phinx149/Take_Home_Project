@@ -17,6 +17,10 @@ Graph_object = Graph()
 Graph_object.graph_builder(connections)
 available_country = Graph_object.get_node_dictionary()
 
+@app.route('/' , methods = ['GET'])
+def no_destination():
+    return jsonify({"Error" : "Please enter three letter code. Input cannot be blank"}), 400
+
 #maps get request to function
 @app.route('/<Destination>' ,methods = ['GET'])
 def Give_Shortest_Route(Destination: str ):
