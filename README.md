@@ -1,91 +1,17 @@
 # North America Route Finder
 
-This project is a Flask API that finds a route from the USA to another supported country in North America.
+A Flask REST API that finds a route from the USA to another supported country in North America.
 
-The countries are stored as a graph, and I use BFS to find the route with the fewest border crossings.
+The countries are stored as a graph, and BFS is used to find the route with the fewest border crossings.
 
-For example:
+## Requirements
 
-`/PAN`
+- Python 3.11+
+- Flask
 
-returns:
+## Running
 
-```json
-{
-  "Route": ["USA", "MEX", "GTM", "HND", "NIC", "CRI", "PAN"],
-  "from": "USA",
-  "destination": "PAN"
-}
-```
-
-## How it works
-
-```mermaid
-flowchart LR
-    A[User enters country code] --> B[Flask API]
-    B --> C[Check input]
-    C -->|Invalid| D[400 Error]
-    C -->|Valid| E[Check if country exists]
-    E -->|No| F[404 Error]
-    E -->|Yes| G[Run BFS]
-    G --> H[Return route]
-```
-
-The project is split into a few main files:
-
-- `Node.py` stores a country and its neighboring countries
-- `Graph.py` builds the graph and finds the shortest route
-- `Flask_app.py` handles the API request
-- `test_backend.py` is used to test the program
-
-## Why I used BFS
-
-I used BFS because each connection represents one border crossing.
-
-There is no distance or travel time being used, so in this project I assume the shortest route means the route with the fewest border crossings. This would change if the graph was weighted.
-
-If distance or travel time was added later, I would use something like Dijkstra's algorithm instead.
-
-## Assumptions
-
-For this project I assumed:
-
-- The route always starts from `USA`
-- The border connections given in the problem are correct
-- Borders work both ways
-- Country codes are not case-sensitive
-- Shortest route means fewest border crossings
-- Only the countries given in the problem are supported
-
-## Error handling
-
-If the input is not three letters or contains something other than letters:
-
-`/P4N`
-
-returns:
-
-`400 Bad Request` and `country needs to be composed of only alphabetic characters`
-
-If the input is three letters but the country is not supported:
-
-`/XYZ`
-
-returns:
-
-`404 Not Found` and `Country code is not supported. May be supported in future updates`
-
-If the input is not the correct length of 3:
-
-`/PA`
-
-returns:
-
-`400 Bad Request` and `error : Country need three letter word`
-
-## Running the project
-
-Create the virtual environment:
+Create a virtual environment:
 
 ```powershell
 python -m venv venv
@@ -97,31 +23,94 @@ Activate it:
 .\venv\Scripts\Activate.ps1
 ```
 
-Install the requirements:
+Install dependencies:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Run the Flask API from the main project folder:
+Run the API from the project root:
 
 ```powershell
 python -m Backend.Flask_app
 ```
 
-Then you can test it in the browser with something like:
+## API
 
-`http://127.0.0.1:5000/PAN`
+Method: `GET`
+
+Endpoint: `/<country>`
+
+Returns the route from USA to the destination country.
+
+Example:
+
+```text
+GET /PAN
+```
+
+Response:
+
+```json
+{
+  "Route": ["USA", "MEX", "GTM", "HND", "NIC", "CRI", "PAN"],
+  "from": "USA",
+  "destination": "PAN"
+}
+```
+
+Invalid input such as:
+
+```text
+/P4N
+```
+
+returns `400 Bad Request`.
+
+A country code that has the correct format but is not supported, such as:
+
+```text
+/XYZ
+```
+
+returns `404 Not Found`.
+
+## How it works
+
+```mermaid
+flowchart LR
+    A[GET country] --> B[Validate input]
+    B --> C[Check country]
+    C --> D[Run BFS]
+    D --> E[Return route as JSON]
+```
+
+`Node.py` stores each country and its neighboring countries.
+
+`Graph.py` builds the bidirectional graph and contains the BFS route search.
+
+`Flask_app.py` handles the API request, validation, and response.
+
+## Assumptions
+
+- The route always starts from `USA`
+- Borders work in both directions
+- The provided border data is treated as correct
+- Country codes are not case-sensitive
+- Shortest route means fewest border crossings
+- Only countries provided in the problem are supported
+
+Since there are no weights for distance or travel time, BFS is used. If the graph was weighted, I would use something like Dijkstra's algorithm instead.
 
 ## Testing
 
-To run the backend tests:
+Run:
 
 ```powershell
 python -m Backend.test_backend
 ```
 
-Some cases I test are:
+Tests include:
 
 - `PAN`
 - `BLZ`
@@ -135,4 +124,4 @@ Some cases I test are:
 
 Deployed link:
 
-` Will Coming soon once I finish testing the api properly`
+`Coming soon will finish soon`
