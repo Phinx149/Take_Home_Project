@@ -59,13 +59,21 @@ Response:
 }
 ```
 
-Invalid input such as:
+Invalid input returns `400 Bad Request`.
+
+Examples:
+
+```text
+/PA
+```
+
+returns an error because the country code is not three letters long.
 
 ```text
 /P4N
 ```
 
-returns `400 Bad Request`.
+returns an error because the country code contains non-letter characters.
 
 A country code that has the correct format but is not supported, such as:
 
@@ -124,4 +132,4 @@ Tests include:
 
 Deployed link:
 
-`Coming soon will finish soon`
+`Coming soon`
